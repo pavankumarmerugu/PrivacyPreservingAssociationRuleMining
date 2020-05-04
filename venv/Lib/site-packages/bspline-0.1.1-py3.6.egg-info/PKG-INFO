@@ -1,0 +1,32 @@
+Metadata-Version: 1.1
+Name: bspline
+Version: 0.1.1
+Summary: Compute B-spline basis functions via Cox - de Boor algorithm.
+Home-page: https://github.com/johntfoster/bspline
+Author: John T. Foster and Juha Jeronen
+Author-email: juha.jeronen@tut.fi
+License: MIT
+Description: Python/Numpy implementation of Bspline basis functions via Cox - de Boor algorithm.
+        
+        Also provided are higher-order differentiation, collocation matrix generation, and a minimal procedural API (mainly for dealing with knot vectors) which may help in converting MATLAB codes.
+        
+        Supports Python 2.7 and 3.4.
+        
+Keywords: spline b-spline numpy
+Platform: Linux
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Provides: bspline
