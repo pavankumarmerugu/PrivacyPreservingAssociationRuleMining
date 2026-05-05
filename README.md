@@ -2,7 +2,83 @@
 
 A machine learning project focused on clustering and recommendation systems using association rule mining techniques on music streaming datasets. This implementation provides privacy-aware user interest modeling and personalized content recommendations.
 
-## 📋 Project Overview
+## �️ Architecture
+
+```mermaid
+flowchart TD
+    subgraph INPUT["📥 Input"]
+        A1["RO_genres.json\nDeezer · 41,773 users\n84 genres"]
+        A2["lastfm.csv\nLast.fm · 1,226 users\n285 artists"]
+    end
+
+    subgraph ENCODE["1️⃣ Encoding"]
+        B["Transaction Encoder\nuser × item binary matrix\n(boolean)"]
+    end
+
+    subgraph SIMILARITY["2️⃣ Item-Item Similarity"]
+        C["Normalise user vectors\n(unit magnitude)"]
+        D["Cosine Similarity\n sparse CSR matrix\n→ item × item matrix"]
+    end
+
+    subgraph GROUPS["3️⃣ Interest Group Formation"]
+        E["Select N centroid items\n(evenly spaced by index)"]
+        F["K nearest neighbours\nper centroid\n→ Interest Groups"]
+        G["Jaccard overlap\nbetween adjacent groups"]
+    end
+
+    subgraph MINING["4️⃣ Frequent Itemset Mining"]
+        H["Apriori Algorithm\nmin_support · max_len\n→ Frequent Itemsets"]
+    end
+
+    subgraph RECOMMEND["5️⃣ Recommendation"]
+        I["Sample users"]
+        J["Match user likes\nagainst 2-itemsets\n→ Triggered Rules"]
+    end
+
+    subgraph EVALUATE["6️⃣ Evaluation"]
+        K["Precision\nRecall\nper user + macro avg"]
+    end
+
+    A1 & A2 --> B
+    B --> C --> D
+    D --> E --> F --> G
+    B --> H
+    H --> J
+    I --> J --> K
+```
+
+## 🎯 General Use Case
+
+The pipeline answers:
+> *"Given a user's listening/genre history, which other items are they likely to enjoy — without building an individual user profile?"*
+
+Privacy is preserved by working exclusively with **aggregate co-occurrence patterns** (frequent itemsets) rather than storing or exposing per-user preference vectors:
+
+| Stage | What happens | Privacy angle |
+|-------|-------------|---------------|
+| Encoding | Raw preferences → boolean matrix | User IDs are positional indices only |
+| Similarity | Item-item cosine similarity | No user-level similarity is computed |
+| Interest groups | Centroid neighbours define genre clusters | Groups represent item clusters, not user clusters |
+| Apriori | Frequent co-occurrence patterns mined | Only patterns above a support threshold are retained — rare/unique preferences are suppressed |
+| Recommendation | Association rules triggered by likes | Rules fire on aggregate patterns; individual rare tastes fall below the support threshold |
+
+### Quick Start (MVP)
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+# Deezer  (41,773 users × 84 genres)
+python mvp.py
+
+# Last.fm  (1,226 users × 285 artists)
+python mvp.py --dataset lastfm
+
+# Tune parameters
+python mvp.py --dataset deezer --min-support 0.15 --n-groups 8 --n-users 20
+```
+
+## �📋 Project Overview
 
 This project implements privacy-preserving techniques to:
 - **Model user interests** through clustering algorithms
@@ -107,10 +183,10 @@ nltk                # Natural language processing
    cd PrivacyPreservingAssociationRuleMining
    ```
 
-2. **Create virtual environment** (optional but recommended)
+2. **Create virtual environment**
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   python3 -m venv .venv
+   source .venv/bin/activate   # Windows: .venv\Scripts\activate
    ```
 
 3. **Install dependencies**
